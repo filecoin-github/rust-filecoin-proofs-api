@@ -6,16 +6,19 @@
 
 pub mod post;
 pub mod seal;
+pub mod update;
 
 mod registry;
 mod types;
 
-pub use crate::registry::{RegisteredAggregationProof, RegisteredPoStProof, RegisteredSealProof};
-pub use crate::types::{PrivateReplicaInfo, PublicReplicaInfo};
+pub use crate::registry::{
+    RegisteredAggregationProof, RegisteredPoStProof, RegisteredSealProof, RegisteredUpdateProof,
+};
+pub use crate::types::{PartitionProofBytes, PrivateReplicaInfo, PublicReplicaInfo};
 
 pub use filecoin_proofs_v1::types::{
-    AggregateSnarkProof, ChallengeSeed, Commitment, PaddedBytesAmount, PieceInfo, PoStType,
-    ProverId, Ticket, UnpaddedByteIndex, UnpaddedBytesAmount,
+    AggregateSnarkProof, ChallengeSeed, Commitment, PaddedBytesAmount, PartitionSnarkProof,
+    PieceInfo, PoStType, ProverId, Ticket, UnpaddedByteIndex, UnpaddedBytesAmount,
 };
 pub use filecoin_proofs_v1::{FallbackPoStSectorProof, SnarkProof, VanillaProof};
 pub use fr32;

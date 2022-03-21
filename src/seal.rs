@@ -3,7 +3,7 @@ use std::io::{Read, Seek, Write};
 use std::path::{Path, PathBuf};
 
 use anyhow::{bail, ensure, Error, Result};
-use bellperson::bls::Fr;
+use blstrs::Scalar as Fr;
 use filecoin_hashers::Hasher;
 
 use filecoin_proofs_v1::constants::{
@@ -174,7 +174,7 @@ impl VanillaSealProof {
         match proof {
             StackedDrg2KiBV1 | StackedDrg2KiBV1_1 => {
                 if let Some(proofs) =
-                Any::downcast_ref::<Vec<Vec<RawVanillaSealProof<SectorShape2KiB>>>>(proofs)
+                    Any::downcast_ref::<Vec<Vec<RawVanillaSealProof<SectorShape2KiB>>>>(proofs)
                 {
                     Ok(VanillaSealProof::StackedDrg2KiBV1(proofs.clone()))
                 } else {
@@ -183,7 +183,7 @@ impl VanillaSealProof {
             }
             StackedDrg8MiBV1 | StackedDrg8MiBV1_1 => {
                 if let Some(proofs) =
-                Any::downcast_ref::<Vec<Vec<RawVanillaSealProof<SectorShape8MiB>>>>(proofs)
+                    Any::downcast_ref::<Vec<Vec<RawVanillaSealProof<SectorShape8MiB>>>>(proofs)
                 {
                     Ok(VanillaSealProof::StackedDrg8MiBV1(proofs.clone()))
                 } else {
@@ -192,7 +192,7 @@ impl VanillaSealProof {
             }
             StackedDrg512MiBV1 | StackedDrg512MiBV1_1 => {
                 if let Some(proofs) =
-                Any::downcast_ref::<Vec<Vec<RawVanillaSealProof<SectorShape512MiB>>>>(proofs)
+                    Any::downcast_ref::<Vec<Vec<RawVanillaSealProof<SectorShape512MiB>>>>(proofs)
                 {
                     Ok(VanillaSealProof::StackedDrg512MiBV1(proofs.clone()))
                 } else {
@@ -201,7 +201,7 @@ impl VanillaSealProof {
             }
             StackedDrg32GiBV1 | StackedDrg32GiBV1_1 => {
                 if let Some(proofs) =
-                Any::downcast_ref::<Vec<Vec<RawVanillaSealProof<SectorShape32GiB>>>>(proofs)
+                    Any::downcast_ref::<Vec<Vec<RawVanillaSealProof<SectorShape32GiB>>>>(proofs)
                 {
                     Ok(VanillaSealProof::StackedDrg32GiBV1(proofs.clone()))
                 } else {
@@ -210,7 +210,7 @@ impl VanillaSealProof {
             }
             StackedDrg64GiBV1 | StackedDrg64GiBV1_1 => {
                 if let Some(proofs) =
-                Any::downcast_ref::<Vec<Vec<RawVanillaSealProof<SectorShape64GiB>>>>(proofs)
+                    Any::downcast_ref::<Vec<Vec<RawVanillaSealProof<SectorShape64GiB>>>>(proofs)
                 {
                     Ok(VanillaSealProof::StackedDrg64GiBV1(proofs.clone()))
                 } else {
@@ -222,7 +222,7 @@ impl VanillaSealProof {
 }
 
 impl<Tree: 'static + MerkleTreeTrait> TryInto<Vec<Vec<RawVanillaSealProof<Tree>>>>
-for VanillaSealProof
+    for VanillaSealProof
 {
     type Error = Error;
 
@@ -291,10 +291,10 @@ pub fn seal_pre_commit_phase1<R, S, T>(
     ticket: Ticket,
     piece_infos: &[PieceInfo],
 ) -> Result<SealPreCommitPhase1Output>
-    where
-        R: AsRef<Path>,
-        S: AsRef<Path>,
-        T: AsRef<Path>,
+where
+    R: AsRef<Path>,
+    S: AsRef<Path>,
+    T: AsRef<Path>,
 {
     ensure!(
         registered_proof.major_version() == 1,
@@ -357,9 +357,9 @@ pub fn seal_pre_commit_phase2<R, S>(
     cache_path: R,
     out_path: S,
 ) -> Result<SealPreCommitPhase2Output>
-    where
-        R: AsRef<Path>,
-        S: AsRef<Path>,
+where
+    R: AsRef<Path>,
+    S: AsRef<Path>,
 {
     ensure!(
         phase1_output.registered_proof.major_version() == 1,
@@ -525,25 +525,6 @@ pub fn seal_commit_phase2(
     )
 }
 
-pub fn calibrate_seal_commit_phase2(
-    phase1_output: SealCommitPhase1Output,
-    prover_id: ProverId,
-    sector_id: SectorId,
-) -> Result<SealCommitPhase2Output> {
-    ensure!(
-        phase1_output.registered_proof.major_version() == 1,
-        "unusupported version"
-    );
-
-    with_shape!(
-        u64::from(phase1_output.registered_proof.sector_size()),
-        calibrate_seal_commit_phase2_inner,
-        phase1_output,
-        prover_id,
-        sector_id,
-    )
-}
-
 fn seal_commit_phase2_inner<Tree: 'static + MerkleTreeTrait>(
     phase1_output: SealCommitPhase1Output,
     prover_id: ProverId,
@@ -572,40 +553,6 @@ fn seal_commit_phase2_inner<Tree: 'static + MerkleTreeTrait>(
     };
 
     let output = filecoin_proofs_v1::seal_commit_phase2::<Tree>(config, co, prover_id, sector_id)?;
-
-    Ok(SealCommitPhase2Output {
-        proof: output.proof,
-    })
-}
-
-fn calibrate_seal_commit_phase2_inner<Tree: 'static + MerkleTreeTrait>(
-    phase1_output: SealCommitPhase1Output,
-    prover_id: ProverId,
-    sector_id: SectorId,
-) -> Result<SealCommitPhase2Output> {
-    let SealCommitPhase1Output {
-        vanilla_proofs,
-        comm_r,
-        comm_d,
-        replica_id,
-        seed,
-        ticket,
-        registered_proof,
-    } = phase1_output;
-
-    let config = registered_proof.as_v1_config();
-    let replica_id: bellperson::bls::Fr = replica_id.into();
-
-    let co = filecoin_proofs_v1::types::SealCommitPhase1Output {
-        vanilla_proofs: vanilla_proofs.try_into()?,
-        comm_r,
-        comm_d,
-        replica_id: replica_id.into(),
-        seed,
-        ticket,
-    };
-
-    let output = filecoin_proofs_v1::calibrate_seal_commit_phase2::<Tree>(config, co, prover_id, sector_id)?;
 
     Ok(SealCommitPhase2Output {
         proof: output.proof,
@@ -1280,9 +1227,9 @@ pub fn add_piece<R, W>(
     piece_size: UnpaddedBytesAmount,
     piece_lengths: &[UnpaddedBytesAmount],
 ) -> Result<(PieceInfo, UnpaddedBytesAmount)>
-    where
-        R: Read,
-        W: Read + Write + Seek,
+where
+    R: Read,
+    W: Read + Write + Seek,
 {
     use RegisteredSealProof::*;
     match registered_proof {
@@ -1300,9 +1247,9 @@ pub fn write_and_preprocess<R, W>(
     target: W,
     piece_size: UnpaddedBytesAmount,
 ) -> Result<(PieceInfo, UnpaddedBytesAmount)>
-    where
-        R: Read,
-        W: Read + Write + Seek,
+where
+    R: Read,
+    W: Read + Write + Seek,
 {
     use RegisteredSealProof::*;
     match registered_proof {
@@ -1313,54 +1260,3 @@ pub fn write_and_preprocess<R, W>(
         }
     }
 }
-
-pub fn generate_labels_bench<R>(
-    registered_proof: RegisteredSealProof,
-    cache_path: R,
-    prover_id: ProverId,
-    sector_id: SectorId,
-    ticket: Ticket,
-    piece_infos: &[PieceInfo],
-) -> Result<()>
-    where
-        R: AsRef<Path>,
-{
-    ensure!(
-        registered_proof.major_version() == 1,
-        "unusupported version"
-    );
-
-    with_shape!(
-        u64::from(registered_proof.sector_size()),
-        generate_labels_bench_inner,
-        registered_proof,
-        cache_path.as_ref(),
-        prover_id,
-        sector_id,
-        ticket,
-        piece_infos
-    )
-}
-
-fn generate_labels_bench_inner<Tree: 'static + MerkleTreeTrait>(
-    registered_proof: RegisteredSealProof,
-    cache_path: &Path,
-    prover_id: ProverId,
-    sector_id: SectorId,
-    ticket: Ticket,
-    piece_infos: &[PieceInfo],
-) -> Result<()> {
-    let config = registered_proof.as_v1_config();
-
-    filecoin_proofs_v1::generate_labels_bench::<_, Tree>(
-        config,
-        cache_path,
-        prover_id,
-        sector_id,
-        ticket,
-        piece_infos,
-    )?;
-
-    Ok(())
-}
-

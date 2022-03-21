@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://book.async.rs/overview
 
 ## [Unreleased]
 
+## [11.0.0] - 2022-01-10
+
+- Add API calls required for empty sector update proofs [#64](https://github.com/filecoin-project/rust-filecoin-proofs-api/pull/64)
+
+## [10.1.0] - 2021-10-25
+
+- Add new Window PoSt per partition API calls [#66](https://github.com/filecoin-project/rust-filecoin-proofs-api/pull/66)
+
+## [10.0.0] - 2021-10-01
+
+- Update all dependencies to use proofs v10.0.0 [#63](https://github.com/filecoin-project/rust-filecoin-proofs-api/pull/63)
+- Update XCode to 12.5.0 as 10.0.0 is deprecated on CI [#62](https://github.com/filecoin-project/rust-filecoin-proofs-api/pull/62)
+
+## [9.0.0] - 2021-08-12
+
+- Swap pairing for blst and update to latest proofs [#58](https://github.com/filecoin-project/rust-filecoin-proofs-api/pull/58)
+
 ## [8.0.1] - 2021-06-09
 
 - Updates for finalizing snarkpack support [#57](https://github.com/filecoin-project/rust-filecoin-proofs-api/pull/57)
@@ -100,7 +117,11 @@ and this project adheres to [Semantic Versioning](https://book.async.rs/overview
 
 - Initial stable release
 
-[Unreleased]: https://github.com/filecoin-project/rust-filecoin-proofs-api/compare/v8.0.1...HEAD
+[Unreleased]: https://github.com/filecoin-project/rust-filecoin-proofs-api/compare/v11.0.0...HEAD
+[11.0.0]: https://github.com/filecoin-project/rust-filecoin-proofs-api/tree/v11.0.0
+[10.1.0]: https://github.com/filecoin-project/rust-filecoin-proofs-api/tree/v10.1.0
+[10.0.0]: https://github.com/filecoin-project/rust-filecoin-proofs-api/tree/v10.0.0
+[9.0.0]: https://github.com/filecoin-project/rust-filecoin-proofs-api/tree/v9.0.0
 [8.0.1]: https://github.com/filecoin-project/rust-filecoin-proofs-api/tree/v8.0.1
 [8.0.0]: https://github.com/filecoin-project/rust-filecoin-proofs-api/tree/v8.0.0
 [7.0.0]: https://github.com/filecoin-project/rust-filecoin-proofs-api/tree/v7.0.0
