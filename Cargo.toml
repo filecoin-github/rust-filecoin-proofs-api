@@ -10,18 +10,19 @@ readme = "README.md"
 
 [dependencies]
 anyhow = "1.0.26"
-bellperson = { git = "ssh://git@github.com/filecoin-github/bellperson.git", branch = "master", default-features = false }
+bellperson = { git = "ssh://git@github.com/filecoin-github/bellperson.git", branch = "master", default-features = false, features = ["cpu-optimization"] }
 bincode = "1.1.2"
 blstrs = "0.4.0"
 serde = "1.0.104"
-filecoin-proofs-v1 = { package = "filecoin-proofs", git = "ssh://git@github.com/filecoin-github/rust-fil-proofs.git", branch = "master", default-features = false }
-filecoin-hashers = { package = "filecoin-hashers", git = "ssh://git@github.com/filecoin-github/rust-fil-proofs.git", branch = "master", default-features = false, features = ["poseidon", "sha256"] }
-fr32 = { package = "fr32", git = "ssh://git@github.com/filecoin-github/rust-fil-proofs.git", branch = "master", default-features = false }
-storage-proofs-core = { package = "storage-proofs-core", git = "ssh://git@github.com/filecoin-github/rust-fil-proofs.git", branch = "master", default-features = false }
-storage-proofs-porep = { package = "storage-proofs-porep", git = "ssh://git@github.com/filecoin-github/rust-fil-proofs.git", branch = "master", default-features = false }
+filecoin-proofs-v1 = { package = "filecoin-proofs", git = "ssh://git@github.com/filecoin-github/rust-fil-proofs.git", branch = "master", default-features = false, features = ["cpu-optimization"] }
+filecoin-hashers = { package = "filecoin-hashers", git = "ssh://git@github.com/filecoin-github/rust-fil-proofs.git", branch = "master", default-features = false, features = ["poseidon", "sha256", "cpu-optimization"] }
+fr32 = { package = "fr32", git = "ssh://git@github.com/filecoin-github/rust-fil-proofs.git", branch = "master", default-features = false, features = ["cpu-optimization"] }
+storage-proofs-core = { package = "storage-proofs-core", git = "ssh://git@github.com/filecoin-github/rust-fil-proofs.git", branch = "master", default-features = false, features = ["cpu-optimization"] }
+storage-proofs-porep = { package = "storage-proofs-porep", git = "ssh://git@github.com/filecoin-github/rust-fil-proofs.git", branch = "master", default-features = false, features = ["cpu-optimization"] }
 
 [features]
-default = ["opencl"]
+default = ["opencl", "cpu-optimization"]
 cuda = ["filecoin-proofs-v1/cuda", "filecoin-hashers/cuda", "storage-proofs-core/cuda", "storage-proofs-porep/cuda", "bellperson/cuda", "fr32/cuda"]
 opencl = ["filecoin-proofs-v1/opencl", "filecoin-hashers/opencl", "storage-proofs-core/opencl", "storage-proofs-porep/opencl", "bellperson/opencl", "fr32/opencl"]
 multicore-sdr = ["storage-proofs-porep/multicore-sdr"]
+cpu-optimization = []
