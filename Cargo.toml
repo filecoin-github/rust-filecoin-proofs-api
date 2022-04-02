@@ -18,7 +18,7 @@ filecoin-proofs-v1 = { package = "filecoin-proofs", git = "ssh://git@github.com/
 filecoin-hashers = { package = "filecoin-hashers", git = "ssh://git@github.com/filecoin-github/rust-fil-proofs.git", branch = "master", default-features = false, features = ["poseidon", "sha256"] }
 fr32 = { package = "fr32", git = "ssh://git@github.com/filecoin-github/rust-fil-proofs.git", branch = "master", default-features = false }
 storage-proofs-core = { package = "storage-proofs-core", git = "ssh://git@github.com/filecoin-github/rust-fil-proofs.git", branch = "master", default-features = false }
-storage-proofs-porep = { package = "storage-proofs-porep", git = "ssh://git@github.com/filecoin-github/rust-fil-proofs.git", branch = "master", default-features = falsŽ }
+storage-proofs-porep = { package = "storage-proofs-porep", git = "ssh://git@github.com/filecoin-github/rust-fil-proofs.git", branch = "master", default-features = false }
 
 [features]
 default = ["opencl", "cpu-optimization"]
